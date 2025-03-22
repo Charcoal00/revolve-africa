@@ -10,7 +10,7 @@ const upload = multer({ dest: "uploads/" });
 
 // Update Profile
 router.patch(
-    "/",
+    "/me",
     authenticateToken,
     upload.single("profilePicture"),
     async (req, res) => {
@@ -31,7 +31,7 @@ router.patch(
     }
 );
 
-router.get("/", authenticateToken, async (req, res) => {
+router.get("/me", authenticateToken, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("-password"); // Exclude password
         if (!user) return res.status(404).json({ error: "User not found." });
