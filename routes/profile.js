@@ -31,6 +31,24 @@ router.patch(
     }
 );
 
+router.get("/me", authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.user.email }); // Fetch by email instead of ID
 
+        if (!user) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        res.json({
+            name: user.name,
+            email: user.email,
+            phone: user.phone || "Not Provided",
+            location: user.location || "Not Provided",
+        });
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
 
 module.exports = router;
