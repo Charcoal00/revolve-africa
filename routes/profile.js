@@ -10,7 +10,7 @@ const upload = multer({ dest: "uploads/" });
 
 // Update Profile
 router.patch(
-    "/me",
+    "/me2",
     authenticateToken,
     upload.single("profilePicture"),
     async (req, res) => {
