@@ -9,12 +9,20 @@ const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
 
 const app = express();
+
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 
+
 // Rate Limiting
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 app.use(limiter);
 
 // Connect to MongoDB
