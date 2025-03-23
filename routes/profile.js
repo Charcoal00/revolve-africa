@@ -44,7 +44,7 @@ const upload = multer({ storage });
 //     }
 // );
 router.put(
-    "/me2",
+    "/me",
     upload.single("profilePicture"),
     authenticateToken,
     async (req, res) => {
