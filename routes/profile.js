@@ -43,28 +43,34 @@ const upload = multer({ storage });
 //         }
 //     }
 // );
-router.put("/me2", upload.single("profilePicture"), async (req, res) => {
-    try {
-        const updates = { ...req.body };
-        if (req.file) updates.profilePicture = `/uploads/${req.file.filename}`;
+router.put(
+    "/me2",
+    upload.single("profilePicture"),
+    authenticateToken,
+    async (req, res) => {
+        try {
+            const updates = { ...req.body };
+            if (req.file)
+                updates.profilePicture = `/uploads/${req.file.filename}`;
 
-        const user = await User.findOneAndUpdate(
-            { email: req.user.email },
-            updates,
-            { new: true }
-        );
-        if (!user) return res.status(404).json({ message: "User not found" });
+            const user = await User.findOneAndUpdate(
+                { email: req.user.email },
+                updates,
+                { new: true }
+            );
+            if (!user)
+                return res.status(404).json({ message: "User not found" });
 
-
-        if (req.file) {
-            user.profilePicture = `/uploads/${req.file.filename}`;
+            if (req.file) {
+                user.profilePicture = `/uploads/${req.file.filename}`;
+            }
+            await user.save();
+            res.json({ message: "Profile updated successfully", user });
+        } catch (error) {
+            res.status(500).json({ message: "Error updating profile", error });
         }
-        await user.save();
-        res.json({ message: "Profile updated successfully", user });
-    } catch (error) {
-        res.status(500).json({ message: "Error updating profile", error });
     }
-});
+);
 
 router.get("/me", authenticateToken, async (req, res) => {
     try {
