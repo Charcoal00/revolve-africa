@@ -33,8 +33,7 @@ router.patch(
 
 router.get("/me", authenticateToken, async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.user.email }); // Fetch by email instead of ID
-
+        const user = await User.findById(req.user.userId); // ✅ Fetch by ID instead of email
         if (!user) {
             return res.status(404).json({ error: "User not found." });
         }
