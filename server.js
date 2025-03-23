@@ -12,7 +12,14 @@ const app = express();
 
 app.set("trust proxy", 1);
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+        origin: ["http://127.0.0.1:5500", "https://therevolveafrica.com"],  // Allow only your frontend
+        credentials: true, // Allow cookies or authorization headers
+        methods: "GET, POST, PUT, DELETE, OPTIONS",
+        allowedHeaders: "Content-Type, Authorization",
+    })
+);
 app.use(helmet());
 
 
