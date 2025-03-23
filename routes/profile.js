@@ -1,3 +1,4 @@
+const path = require("path"); // ✅ Add this line
 const express = require("express");
 const multer = require("multer");
 const authenticateToken = require("../middleware/auth");
@@ -6,43 +7,18 @@ const User = require("../models/User");
 const router = express.Router();
 
 // Multer Storage
+
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, "../uploads");
-        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-        cb(null, uploadDir);
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, "../uploads")); // ✅ Fixing the path issue
     },
-    filename: (req, file, cb) => {
-        cb(
-            null,
-            `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`
-        );
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname);
     },
 });
 
 const upload = multer({ storage });
-// Update Profile
-// router.patch(
-//     "/me2",
-//     authenticateToken,
-//     upload.single("profilePicture"),
-//     async (req, res) => {
-//         try {
-//             const updateData = req.body;
-//             if (req.file)
-//                 updateData["profile.profilePicture"] = req.file.filename;
 
-//             const updatedUser = await User.findByIdAndUpdate(
-//                 req.user.id,
-//                 { $set: updateData },
-//                 { new: true }
-//             );
-//             res.json({ message: "Profile updated", user: updatedUser });
-//         } catch {
-//             res.status(500).json({ error: "Profile update failed" });
-//         }
-//     }
-// );
 router.put(
     "/me",
     upload.single("profilePicture"),
