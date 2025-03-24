@@ -8,9 +8,12 @@ const router = express.Router();
 
 // Multer Storage
 
+
+// Ensure the uploads folder exists before storing files
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "../uploads")); // ✅ Fixing the path issue
+        const uploadPath = path.join(__dirname, "../uploads");
+        cb(null, uploadPath); // ✅ Ensure files are saved in a valid folder
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + "-" + file.originalname);
@@ -18,6 +21,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+module.exports = upload;
 
 router.put(
     "/me",
